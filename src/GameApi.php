@@ -38,7 +38,7 @@ class GameApi extends Api {
                 }
                 return $summoners;
             }
-            return new Summoner($array[0], $this);
+            return new Summoner($array[key($array)], $this);
         }
         return null;
     }
