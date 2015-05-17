@@ -6,19 +6,31 @@ use LeagueData\Exceptions\RequiredRiotKey;
 
 abstract class Api {
 
+    protected $api_key;
     protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/%s/%s?api_key=%s';
     protected $version = 'v1.0';
     protected $region;
-    protected $api_key;
     protected $client;
 
     public function __construct($api_key = null, $region = 'euw') {
-        if ($api_key == null)
-            throw new RequiredRiotKey("Requires riot api key: https://developer.riotgames.com/");
+        if (!isset($api_key)) {
+            if ($api_key == null)
+                throw new RequiredRiotKey("Requires riot api key: https://developer.riotgames.com/");
 
-        $this->api_key = $api_key;
+            $this->api_key = $api_key;
+        }
         $this->region = $region;
         $this->client = new Client();
+    }
+
+    public function setRegion($region) {
+        $this->region = strtolower($region);
+        return $this;
+    }
+
+    public function setVersion($version) {
+        $this->version = strtolower($version);
+        return $this;
     }
 
     protected function request($query) {
@@ -33,16 +45,6 @@ abstract class Api {
             throw new \HttpException('HttpException...', $code);
 
         return $response->json();
-    }
-
-    protected function setRegion($region) {
-        $this->region = strtolower($region);
-        return $this;
-    }
-
-    protected function setVersion($version) {
-        $this->version = strtolower($version);
-        return $this;
     }
 
     private function url($query) {
