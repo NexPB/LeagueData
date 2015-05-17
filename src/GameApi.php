@@ -1,12 +1,12 @@
 <?php namespace LeagueData;
 
 use LeagueData\Game\Api;
-use LeagueData\Game\Wrappers\Summoner;
+use LeagueData\Game\Dto\Summoner;
 
 class GameApi extends Api {
 
     private $summoner_version = 'v1.4';
-    private $matchhistory_version = 'v2.2';
+    private $recent_games_version = 'v1.3';
 
     /**
      * Creates a Summoner/Array of Summoners from name(s)/id(s).
@@ -44,20 +44,20 @@ class GameApi extends Api {
     }
 
     /**
-     * Returns 10 recent games the Summoner has played.
+     * Returns 10 recent games.
      *
      * @param $id Summoner
      * @return array
      * @throws \HttpException
      */
     public function games($id) {
-        $this->setVersion($this->matchhistory_version);
+        $this->setVersion($this->recent_games_version);
         if (!is_numeric($id))
             throw new \InvalidArgumentException('Type $id: ' . gettype($id));
 
-        $info = $this->request('matchhistory/' . $id);
+        $info = $this->request('game/by-summoner/' . $id . '/recent');
         $matches = [];
-        foreach($info['matches'] as $data) {
+        foreach($info['games'] as $data) {
             array_push($matches, $data);
         }
         return $matches;
