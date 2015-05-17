@@ -1,4 +1,4 @@
-<?php namespace LeagueData\Game\Wrappers;
+<?php namespace LeagueData\Game\Dto;
 
 class Summoner extends Wrapper {
 

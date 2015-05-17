@@ -1,6 +1,6 @@
-<?php namespace LeagueData\Game\Wrappers;
+<?php namespace LeagueData\Game\Dto;
 
-abstract class Wrapper {
+abstract class Dto {
 
     private $api;
 
