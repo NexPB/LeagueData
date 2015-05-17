@@ -2,17 +2,20 @@
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use HttpException;
+use LeagueData\Exceptions\RequiredRiotKey;
 
 abstract class Api {
 
-    protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/';
-    protected $api_key;
-    protected $version;
+    protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/%s/%s?api_key=%s';
+    protected $version = 'v1.0';
     protected $region;
+    protected $api_key;
     protected $client;
 
-    public function __construct($api_key, $region) {
+    public function __construct($api_key = null, $region = 'euw') {
+        if ($api_key == null)
+            throw new RequiredRiotKey("Requires riot api key: https://developer.riotgames.com/");
+
         $this->api_key = $api_key;
         $this->region = $region;
         $this->client = new Client();
@@ -27,16 +30,22 @@ abstract class Api {
         }
         $code = $response->getStatusCode();
         if (intval($code) !== 200)
-            throw new HttpException('HttpException: ', $code);
+            throw new \HttpException('HttpException...', $code);
 
         return $response->json();
     }
 
-    private function getBaseUrl($region) {
-        return sprintf($this->base_url, $region, $region);
+    protected function setRegion($region) {
+        $this->region = strtolower($region);
+        return $this;
+    }
+
+    protected function setVersion($version) {
+        $this->version = strtolower($version);
+        return $this;
     }
 
     private function url($query) {
-        return sprintf($this->getBaseUrl($this->region) . $this->version . '/%s?api_key=' . $this->api_key, $query);
+        return sprintf($this->base_url, $this->region, $this->region, $this->version, $query, $this->api_key);
     }
 }
