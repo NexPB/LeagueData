@@ -1,8 +1,8 @@
-<?php namespace LeagueData\Game;
+<?php namespace LeagueData\Core;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use LeagueData\Exceptions\RequiredRiotKey;
+use LeagueData\Core\Exception\RequiredApiKey;
 
 abstract class Api {
 
@@ -15,7 +15,7 @@ abstract class Api {
     public function __construct($api_key = null, $region = 'euw') {
         if (!isset($api_key)) {
             if ($api_key == null)
-                throw new RequiredRiotKey("Requires riot api key: https://developer.riotgames.com/");
+                throw new RequiredApiKey("Requires riot api key: https://developer.riotgames.com/");
 
             $this->api_key = $api_key;
         }
@@ -33,7 +33,7 @@ abstract class Api {
         return $this;
     }
 
-    protected function request($query) {
+    public function request($query) {
         try {
             $response = $this->client->get($this->url($query));
         } catch (RequestException $e) {
