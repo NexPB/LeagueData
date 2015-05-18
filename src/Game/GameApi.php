@@ -1,21 +1,35 @@
-<?php namespace LeagueData;
+<?php namespace LeagueData\Game;
 
-use LeagueData\Game\Api;
+use LeagueData\Core\Api;
 use LeagueData\Game\Dto\Summoner;
 
 class GameApi extends Api {
 
     private $summoner_version = 'v1.4';
-    private $recent_games_version = 'v1.3';
+
 
     /**
-     * Creates a Summoner/Array of Summoners from name(s)/id(s).
+     * Returns a Summoner or Array of Summoners from name(s)/id(s).
      *
-     * @param $identifiers Array of names/ids OR Single name/id
+     * If $without_request is set to true, it will create a new Summoner without calling the API. ($identifiers MUST BE ids)
+     *
+     * @param $identifiers
+     * @param $without_request
      * @return mixed|null
      * @throws \HttpException
      */
-    public function summoner($identifiers) {
+    public function summoner($identifiers, $without_request = false) {
+        if ($without_request) {
+            if (!is_array($identifiers)) {
+                return new Summoner(['id' => $identifiers], $this);
+            }
+            $summoners = [];
+            foreach ($identifiers as $id) {
+                $summoner = new Summoner(['id' => $id], $this);
+                array_push($summoners, $summoner);
+            }
+            return $summoners;
+        }
         $this->setVersion($this->summoner_version);
         $ids = $identifiers;
         $query = 'summoner/';
@@ -41,25 +55,5 @@ class GameApi extends Api {
             return new Summoner($array[key($array)], $this);
         }
         return null;
-    }
-
-    /**
-     * Returns 10 recent games.
-     *
-     * @param $id Summoner
-     * @return array
-     * @throws \HttpException
-     */
-    public function games($id) {
-        $this->setVersion($this->recent_games_version);
-        if (!is_numeric($id))
-            throw new \InvalidArgumentException('Type $id: ' . gettype($id));
-
-        $info = $this->request('game/by-summoner/' . $id . '/recent');
-        $matches = [];
-        foreach($info['games'] as $data) {
-            array_push($matches, $data);
-        }
-        return $matches;
     }
 }
