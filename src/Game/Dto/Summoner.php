@@ -20,7 +20,7 @@ class Summoner extends Dto {
      */
     public function getRecentGames() {
         $this->api()->setVersion($this->recent_games_version);
-        $info = $this->request('game/by-summoner/' . $this->getId() . '/recent');
+        $info = $this->api()->request('game/by-summoner/' . $this->getId() . '/recent');
         $matches = [];
         foreach($info['games'] as $data) {
             array_push($matches, $data);
