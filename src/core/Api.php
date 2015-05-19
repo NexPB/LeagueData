@@ -11,6 +11,7 @@ abstract class Api {
     protected $version = 'v1.0';
     protected $region;
     protected $client;
+    protected $requests = 0;
 
     public function __construct($api_key = null, $region = 'euw') {
         if (!isset($this->api_key)) {
@@ -21,16 +22,6 @@ abstract class Api {
         }
         $this->region = $region;
         $this->client = new Client();
-    }
-
-    public function setRegion($region) {
-        $this->region = strtolower($region);
-        return $this;
-    }
-
-    public function setVersion($version) {
-        $this->version = strtolower($version);
-        return $this;
     }
 
     public function request($query, $version = '') {
@@ -47,7 +38,22 @@ abstract class Api {
         if (intval($code) !== 200)
             throw new \HttpException('HttpException...', $code);
 
+        $this->requests += 1;
         return $response->json();
+    }
+
+    public function getTotalRequests() {
+        return $this->requests;
+    }
+
+    public function setRegion($region) {
+        $this->region = strtolower($region);
+        return $this;
+    }
+
+    public function setVersion($version) {
+        $this->version = strtolower($version);
+        return $this;
     }
 
     private function url($query) {
