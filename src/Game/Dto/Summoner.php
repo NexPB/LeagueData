@@ -21,15 +21,22 @@ class Summoner extends Dto {
     public function getRecentGames() {
         $this->api()->setVersion($this->recent_games_version);
         $info = $this->api()->request('game/by-summoner/' . $this->getId() . '/recent');
-        $matches = [];
+        $games = [];
         foreach($info['games'] as $data) {
-            array_push($matches, $data);
+            $game = new Game($data, $this->api());
+            array_push($games, $game);
         }
-        return $matches;
+        return $games;
     }
 
+    /**
+     * Returns summoner id.
+     *
+     * @return int|string
+     * @throws InvalidDto
+     */
     public function getId() {
-        if (!is_numeric($this->getId()))
+        if (!is_numeric($this->id))
             throw new InvalidDto("this Summoner has an invalid id.");
 
         return $this->id;
