@@ -13,7 +13,7 @@ abstract class Api {
     protected $client;
 
     public function __construct($api_key = null, $region = 'euw') {
-        if (!isset($api_key)) {
+        if (!isset($this->api_key)) {
             if ($api_key == null)
                 throw new RequiredApiKey("Requires riot api key: https://developer.riotgames.com/");
 
@@ -33,7 +33,10 @@ abstract class Api {
         return $this;
     }
 
-    public function request($query) {
+    public function request($query, $version = '') {
+        if ($version !== '')
+            $this->setVersion($version);
+
         try {
             $response = $this->client->get($this->url($query));
         } catch (RequestException $e) {
