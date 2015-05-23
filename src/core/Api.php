@@ -1,8 +1,8 @@
 <?php namespace LeagueData\Core;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use LeagueData\Core\Exception\RequiredApiKey;
+use LeagueData\Core\Exception\HttpExceptionUnknown;
+use LeagueData\Core\Exception\HttpException503;
 
 abstract class Api {
 
@@ -17,7 +17,6 @@ abstract class Api {
     protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/%s/%s?api_key=%s';
     protected $version = 'v1.0';
     protected $region;
-    protected $client;
     protected $requests = 0;
 
     public function __construct($api_key = null, $region = 'euw') {
@@ -28,7 +27,6 @@ abstract class Api {
             $this->api_key = $api_key;
         }
         $this->region = $region;
-        $this->client = new Client();
     }
 
     protected function url($query) {
@@ -39,18 +37,24 @@ abstract class Api {
         if ($version !== '')
             $this->setVersion($version);
 
-        try {
-            $response = $this->client->get($this->url($query));
-        } catch (RequestException $e) {
-            echo $e->getRequest();
-            return null;
+        $ch = curl_init($this->url($query));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (intval($code) !== 200) {
+            switch ($code) {
+                case 503:
+                    throw new HttpException503("Service unavailable.");
+
+                default:
+                    throw new HttpExceptionUnknown("Unknown HttpException.");
+            }
         }
-        $code = $response->getStatusCode();
-        if (intval($code) !== 200)
-            throw new \HttpException('HttpException...', $code);
 
         $this->requests += 1;
-        return $response->json();
+        return json_decode($response, true);
     }
 
     public function getTotalRequests() {
