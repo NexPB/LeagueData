@@ -1,12 +1,10 @@
-<?php namespace LeagueData\Game;
+<?php namespace LeagueData;
 
 use LeagueData\Core\Api;
 use LeagueData\Game\Dto\Summoner;
+use LeagueData\Game\LeagueStatic;
 
-class GameApi extends Api {
-
-    private $summoner_version = 'v1.4';
-    private $match_version = 'v2.2';
+class LeagueData extends Api {
 
     /**
      * Returns a Summoner or Array of Summoners from name(s)/id(s).
@@ -41,7 +39,7 @@ class GameApi extends Api {
                 $query .= 'by-name/';
         }
 
-        $array = $this->request($query . htmlspecialchars($ids), $this->summoner_version);
+        $array = $this->request($query . htmlspecialchars($ids), $this->versions['summoner']);
         if ($array != null) {
             if (count($array) > 1) {
                 $summoners = [];
@@ -64,6 +62,15 @@ class GameApi extends Api {
      * @throws \HttpException
      */
     public function match($match_id) {
-        return $this->request('match/' . $match_id, $this->match_version);
+        return $this->request('match/' . $match_id, $this->versions['match']);
+    }
+
+    /**
+     * Returns instance for LeagueStaticData.
+     *
+     * @return LeagueStaticData
+     */
+    public function data() {
+        return new LeagueStatic($this->api_key);
     }
 }
