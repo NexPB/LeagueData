@@ -6,7 +6,7 @@ Requirements:
 
 Example:
 ```php
-$api = new GameApi("API-KEY-HERE);
+$api = new LeagueData("API-KEY-HERE);
 $api->setRegion('euw');
 $api->summoner("Flamethrower")->getRecentGames();
 ```
