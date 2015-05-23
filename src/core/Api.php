@@ -6,6 +6,13 @@ use LeagueData\Core\Exception\RequiredApiKey;
 
 abstract class Api {
 
+    public $versions = [
+        'summoner' => 'v1.4',
+        'match' => 'v2.2',
+        'recent_games' => 'v1.3',
+        'static_data' => 'v1.2'
+    ];
+
     protected $api_key;
     protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/%s/%s?api_key=%s';
     protected $version = 'v1.0';
@@ -22,6 +29,10 @@ abstract class Api {
         }
         $this->region = $region;
         $this->client = new Client();
+    }
+
+    protected function url($query) {
+        return sprintf($this->base_url, $this->region, $this->region, $this->version, $query, $this->api_key);
     }
 
     public function request($query, $version = '') {
@@ -54,9 +65,5 @@ abstract class Api {
     public function setVersion($version) {
         $this->version = strtolower($version);
         return $this;
-    }
-
-    private function url($query) {
-        return sprintf($this->base_url, $this->region, $this->region, $this->version, $query, $this->api_key);
     }
 }

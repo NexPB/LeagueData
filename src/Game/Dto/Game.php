@@ -19,11 +19,11 @@ class Game extends Dto {
     protected $stats;
 
     /**
-     * Returns ALL info possible about the match. (Uses new GameApi($key)->match($match_id))
+     * Returns ALL info possible about the match.
      *
      * @return mixed|null
      */
     public function getMatch() {
-        return $this->api()->match($this->gameId);
+        return $this->api()->request('match/' . $this->gameId, $this->api()->versions['match']);
     }
 }

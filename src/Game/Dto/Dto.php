@@ -1,12 +1,15 @@
 <?php namespace LeagueData\Game\Dto;
 
-use LeagueData\Game\GameApi;
+use LeagueData\Core\Api;
 
 abstract class Dto {
 
     private $api;
 
-    public function __construct($data, GameApi $api = null) {
+    public function __construct($data, $api = null) {
+        if (!$api instanceof Api)
+            throw new \InvalidArgumentException("Invalid Api instance.");
+
         $this->api = $api;
         if (is_array($data)) {
             foreach ($data as $key => $value) {

@@ -10,8 +10,6 @@ class Summoner extends Dto {
     protected $profileIconId;
     protected $revisionDate;
 
-    private $recent_games_version = 'v1.3';
-
     /**
      * Returns 10 recent games.
      *
@@ -19,8 +17,7 @@ class Summoner extends Dto {
      * @throws \HttpException
      */
     public function getRecentGames() {
-        $this->api()->setVersion($this->recent_games_version);
-        $info = $this->api()->request('game/by-summoner/' . $this->getId() . '/recent');
+        $info = $this->api()->request('game/by-summoner/' . $this->getId() . '/recent', $this->api()->versions['recent_games']);
         $games = [];
         foreach($info['games'] as $data) {
             $game = new Game($data, $this->api());
