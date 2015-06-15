@@ -37,10 +37,15 @@ abstract class Api {
         if ($version !== '')
             $this->setVersion($version);
 
-        $ch = curl_init($this->url($query));
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $this->url($query));
+
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         curl_close($ch);
 
         if (intval($code) !== 200) {
