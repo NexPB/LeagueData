@@ -2,9 +2,8 @@
 
 Requirements:
 * PHP 5.4.0 +
-* cURL
+* cURL extension enabled
 
-Examples:
 
 Recent games for Summoner(s):
 ```php
