@@ -4,6 +4,10 @@ Requirements:
 * PHP 5.4.0 +
 * cURL extension enabled
 
+Install with [composer](https://getcomposer.org/)
+```
+composer require nex-pb/league-data
+```
 
 Recent games for Summoner(s):
 ```php
