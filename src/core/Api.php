@@ -10,11 +10,13 @@ abstract class Api {
         'summoner' => 'v1.4',
         'match' => 'v2.2',
         'recent_games' => 'v1.3',
+        'match_history' => 'v2.2',
         'static_data' => 'v1.2'
     ];
 
     protected $api_key;
     protected $base_url = 'https://%s.api.pvp.net/api/lol/%s/%s/%s?api_key=%s';
+    protected $base_url_2 = 'https://%s.api.pvp.net/api/lol/%s/%s/%s&api_key=%s';
     protected $version = 'v1.0';
     protected $region;
     protected $requests = 0;
@@ -29,11 +31,11 @@ abstract class Api {
         $this->region = $region;
     }
 
-    protected function url($query) {
-        return sprintf($this->base_url, $this->region, $this->region, $this->version, $query, $this->api_key);
+    protected function url($query, $append_api_key = false) {
+        return sprintf(($append_api_key ? $this->base_url_2 : $this->base_url), $this->region, $this->region, $this->version, $query, $this->api_key);
     }
 
-    public function request($query, $version = '') {
+    public function request($query, $version = '', $append_api_key = false) {
         if ($version !== '')
             $this->setVersion($version);
 
@@ -41,7 +43,7 @@ abstract class Api {
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $this->url($query));
+        curl_setopt($ch, CURLOPT_URL, $this->url($query, $append_api_key));
 
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);

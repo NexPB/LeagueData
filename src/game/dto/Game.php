@@ -26,4 +26,16 @@ class Game extends Dto {
     public function getMatch() {
         return $this->api()->request('match/' . $this->gameId, $this->api()->versions['match']);
     }
+
+    /**
+     * Checks if the game is ranked.
+     *
+     * @return $this|bool
+     */
+    public function isSoloRanked() {
+        if ($this->gameMode === "CLASSIC" && $this->mapId === 11 && $this->subType === "RANKED_SOLO_5x5")
+            return $this;
+
+        return false;
+    }
 }

@@ -14,7 +14,6 @@ class Summoner extends Dto {
      * Returns 10 recent games.
      *
      * @return array
-     * @throws \HttpException
      */
     public function getRecentGames() {
         $info = $this->api()->request('game/by-summoner/' . $this->getId() . '/recent', $this->api()->versions['recent_games']);
@@ -24,6 +23,21 @@ class Summoner extends Dto {
             array_push($games, $game);
         }
         return $games;
+    }
+
+    /**
+     * Returns last 10 matches (Default: solo-q ranked)
+     *
+     * @return array
+     */
+    public function getMatchHistory() {
+        $info = $this->api()->request('matchhistory/' . $this->getId(), $this->api()->versions['match_history']);
+        $matches = [];
+        foreach($info['matches'] as $data) {
+            $match = new Match($data, $this->api());
+            array_push($matches, $match);
+        }
+        return $matches;
     }
 
     /**

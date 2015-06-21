@@ -58,11 +58,13 @@ class LeagueData extends Api {
      * Detailed match information.
      *
      * @param $match_id
-     * @return mixed|null
-     * @throws \HttpException
+     * @param bool $include_timeline
+     * @return mixed
+     * @throws Core\Exception\HttpException503
+     * @throws Core\Exception\HttpExceptionUnknown
      */
-    public function match($match_id) {
-        return $this->request('match/' . $match_id, $this->versions['match']);
+    public function match($match_id, $include_timeline = false) {
+        return $this->request('match/' . $match_id . ( $include_timeline ? '?includeTimeline=true' : '' ), $this->versions['match'], $include_timeline);
     }
 
     /**
