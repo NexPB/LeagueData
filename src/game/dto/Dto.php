@@ -13,11 +13,17 @@ abstract class Dto {
         $this->api = $api;
         if (is_array($data)) {
             foreach ($data as $key => $value) {
-                $this->$key = $value;
+                if (property_exists(get_called_class(), $key))
+                    $this->$key = $value;
             }
         }
     }
 
+    /**
+     * Return the API instance.
+     *
+     * @return Api
+     */
     public function api() {
         return $this->api;
     }
