@@ -21,6 +21,13 @@ abstract class Api {
     protected $region;
     protected $requests = 0;
 
+    /**
+     * Instantiate a new Api
+     *
+     * @param null $api_key
+     * @param string $region
+     * @throws RequiredApiKey
+     */
     public function __construct($api_key = null, $region = 'euw') {
         if (!isset($this->api_key)) {
             if ($api_key == null)
@@ -31,10 +38,16 @@ abstract class Api {
         $this->region = $region;
     }
 
-    protected function url($query, $append_api_key = false) {
-        return sprintf(($append_api_key ? $this->base_url_2 : $this->base_url), $this->region, $this->region, $this->version, $query, $this->api_key);
-    }
-
+    /**
+     * Returns an array with data from the requested api query.
+     *
+     * @param $query
+     * @param string $version
+     * @param bool $append_api_key will use &api_key= instead of ?api_key=
+     * @return mixed
+     * @throws HttpException503
+     * @throws HttpExceptionUnknown
+     */
     public function request($query, $version = '', $append_api_key = false) {
         if ($version !== '')
             $this->setVersion($version);
@@ -64,15 +77,43 @@ abstract class Api {
         return json_decode($response, true);
     }
 
+    /**
+     * Returns the url for $this->request
+     *
+     * @param $query
+     * @param bool $append_api_key
+     * @return string
+     */
+    public function url($query, $append_api_key = false) {
+        return sprintf(($append_api_key ? $this->base_url_2 : $this->base_url), $this->region, $this->region, $this->version, $query, $this->api_key);
+    }
+
+    /**
+     * Total requests using $this->request()
+     *
+     * @return int
+     */
     public function getTotalRequests() {
         return $this->requests;
     }
 
+    /**
+     * Set api region.
+     *
+     * @param $region
+     * @return $this
+     */
     public function setRegion($region) {
         $this->region = strtolower($region);
         return $this;
     }
 
+    /**
+     * Set api version.
+     *
+     * @param $version
+     * @return $this
+     */
     public function setVersion($version) {
         $this->version = strtolower($version);
         return $this;
