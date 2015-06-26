@@ -1,10 +1,10 @@
 {
   "name": "nex-pb/league-data",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "library",
   "authors": [
     {
-      "name": "Lorenzo De Loof"
+      "name": "NexPB (Lorenzo De Loof)"
     }
   ],
   "require": {
