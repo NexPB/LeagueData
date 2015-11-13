@@ -1,5 +1,7 @@
 <?php namespace LeagueData\Core;
 
+use LeagueData\Core\Exception\HttpException400;
+use LeagueData\Core\Exception\HttpException429;
 use LeagueData\Core\Exception\RequiredApiKey;
 use LeagueData\Core\Exception\HttpExceptionUnknown;
 use LeagueData\Core\Exception\HttpException503;
@@ -45,6 +47,8 @@ abstract class Api {
      * @param string $version
      * @param bool $append_api_key will use &api_key= instead of ?api_key=
      * @return mixed
+     * @throws HttpException400
+     * @throws HttpException429
      * @throws HttpException503
      * @throws HttpExceptionUnknown
      */
@@ -56,20 +60,26 @@ abstract class Api {
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $this->url($query, $append_api_key));
+
+        $url = $this->url($query, $append_api_key);
+        curl_setopt($ch, CURLOPT_URL, $url);
 
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        curl_close($ch);
-
         if (intval($code) !== 200) {
             switch ($code) {
+                case 400:
+                    throw new HttpException400("Bad request - Url:" . $url);
+
+                case 429:
+                    throw new HttpException429("Exceeded the rate limit, make sure you get the upgraded developers key for production.");
+
                 case 503:
                     throw new HttpException503("Service unavailable.");
 
                 default:
-                    throw new HttpExceptionUnknown("Unknown HttpException.");
+                    throw new HttpExceptionUnknown("Unknown HttpException - Code:" . $code .' - Url: ' .$url);
             }
         }
 

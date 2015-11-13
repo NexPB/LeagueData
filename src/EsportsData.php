@@ -31,7 +31,7 @@ class EsportsData extends Api {
     /**
      * Returns an array with team data
      *
-     * @param $id required
+     * @param int $id
      * @param bool $expand show all player info.
      * @return mixed
      * @throws Core\Exception\HttpException503
@@ -44,7 +44,7 @@ class EsportsData extends Api {
     /**
      * Returns an array with detailed player info.
      *
-     * @param $id required
+     * @param int $id
      * @return mixed
      * @throws Core\Exception\HttpException503
      * @throws Core\Exception\HttpExceptionUnknown
@@ -56,7 +56,7 @@ class EsportsData extends Api {
     /**
      * Overrides parent class url method.
      *
-     * @param $query
+     * @param string $query
      * @param bool $append_api_key
      * @return string
      */

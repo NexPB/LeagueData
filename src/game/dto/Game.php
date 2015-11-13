@@ -18,6 +18,8 @@ class Game extends Dto {
     protected $fellowPlayers;
     protected $stats;
 
+    private $rankedTypes = ["RANKED_SOLO_5x5", "RANKED_PREMADE_5x5", "RANKED_TEAM_5x5"];
+
     /**
      * Returns ALL info possible about the match.
      *
@@ -30,12 +32,9 @@ class Game extends Dto {
     /**
      * Checks if the game is ranked.
      *
-     * @return $this|bool
+     * @return bool
      */
-    public function isSoloRanked() {
-        if ($this->gameMode === "CLASSIC" && $this->mapId === 11 && $this->subType === "RANKED_SOLO_5x5")
-            return $this;
-
-        return false;
+    public function isRanked() {
+        return $this->gameMode === "CLASSIC" && $this->mapId === 11 && in_array($this->subType, $this->rankedTypes);
     }
 }

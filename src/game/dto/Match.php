@@ -13,7 +13,7 @@ class Match extends Dto {
     protected $matchDuration;
 
     /**
-     * Returns simple stats from the game for 1 summoner (stats: champ, summs, build, gold, kda, won)
+     * Returns simple stats from the game for 1 summoner (stats: champ, summoner spells, build, gold, kda, won)
      *
      * @param int $id
      * @return array
@@ -26,18 +26,6 @@ class Match extends Dto {
             }
         }
         return $this->parseSimpleData($this->participants[0]);
-    }
-
-    /**
-     * Checks if our match is solo(duo)-ranked.
-     *
-     * @return $this|bool
-     */
-    public function isSoloRanked() {
-        if (in_array($this->queueType, ["RANKED_SOLO_5x5", "RANKED_PREMADE_5x5"]))
-            return $this;
-
-        return false;
     }
 
     private function parseSimpleData($data) {

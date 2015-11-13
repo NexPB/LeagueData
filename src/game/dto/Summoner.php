@@ -48,8 +48,17 @@ class Summoner extends Dto {
      */
     public function getId() {
         if (!is_numeric($this->id))
-            throw new InvalidDto("this Summoner has an invalid id.");
+            throw new InvalidDto("This Summoner has an invalid id.");
 
         return $this->id;
+    }
+
+    /**
+     * Returns summoner name empty string if name wasn't set.
+     *
+     * @return string
+     */
+    public function getName() {
+        return isset($this->name) ?: '';
     }
 }

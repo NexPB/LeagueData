@@ -9,15 +9,15 @@ class LeagueData extends Api {
     /**
      * Returns a Summoner or Array of Summoners from name(s)/id(s).
      *
-     * If $without_request is set to true, it will create a new Summoner without calling the API. ($identifiers MUST BE ids)
+     * If $request is set to false, it will create a new Summoner without calling the API. ($identifiers MUST BE ids)
      *
      * @param $identifiers
-     * @param $without_request
+     * @param bool $request
      * @return mixed|null
      * @throws \HttpException
      */
-    public function summoner($identifiers, $without_request = false) {
-        if ($without_request) {
+    public function summoner($identifiers, $request = true) {
+        if (!$request) {
             if (!is_array($identifiers)) {
                 return new Summoner(['id' => $identifiers], $this);
             }
@@ -39,7 +39,7 @@ class LeagueData extends Api {
                 $query .= 'by-name/';
         }
 
-        $array = $this->request($query . htmlspecialchars($ids), $this->versions['summoner']);
+        $array = $this->request($query . rawurlencode($ids), $this->versions['summoner']);
         if ($array != null) {
             if (count($array) > 1) {
                 $summoners = [];
@@ -57,7 +57,7 @@ class LeagueData extends Api {
     /**
      * Detailed match information.
      *
-     * @param $match_id
+     * @param int $match_id
      * @param bool $include_timeline
      * @return mixed
      * @throws Core\Exception\HttpException503
