@@ -13,7 +13,8 @@ abstract class Api {
         'match' => 'v2.2',
         'recent_games' => 'v1.3',
         'match_history' => 'v2.2',
-        'static_data' => 'v1.2'
+        'static_data' => 'v1.2',
+        'stats' => 'v1.3'
     ];
 
     protected $api_key;

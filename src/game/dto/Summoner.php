@@ -41,6 +41,15 @@ class Summoner extends Dto {
     }
 
     /**
+     * Get Summoner stats
+     *
+     * @return mixed
+     */
+    public function getStats() {
+        return new Stats($this->api()->request('stats/by-summoner/' . $this->getId() . '/summary', $this->api()->versions['stats']), $this->api());
+    }
+
+    /**
      * Returns summoner id.
      *
      * @return int|string
@@ -59,6 +68,6 @@ class Summoner extends Dto {
      * @return string
      */
     public function getName() {
-        return isset($this->name) ?: '';
+        return isset($this->name) ? $this->name : '';
     }
 }
